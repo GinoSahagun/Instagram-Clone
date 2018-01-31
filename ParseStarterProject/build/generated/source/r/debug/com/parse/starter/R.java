@@ -2943,7 +2943,7 @@ public final class R {
     public static final int listMode=0x7f080075;
     public static final int list_item=0x7f080076;
     public static final int loading_indicator=0x7f080077;
-    public static final int logo=0x7f080078;
+    public static final int logoImage =0x7f080078;
     public static final int logo_only=0x7f080079;
     public static final int main_container=0x7f08007a;
     public static final int match_global_nicknames=0x7f08007b;

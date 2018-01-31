@@ -8,12 +8,19 @@
  */
 package com.parse.starter;
 import android.content.Intent;
+import android.hardware.input.InputManager;
+import android.inputmethodservice.Keyboard;
+import android.inputmethodservice.KeyboardView;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,13 +43,34 @@ import org.w3c.dom.Text;
 import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, View.OnKeyListener {
 
 
   Boolean signUpModeActive = true;
   TextView changeSignUpTextView = (TextView) findViewById(R.id.ChangeSignUpTextView);
+  EditText passwordField = (EditText) findViewById(R.id.password);
+
+  //Pressing enter in the keyboard will allow the user to right away enter sign up or login
+  //Param i is the key pressed and represented as a integer
+  @Override
+  public boolean onKey(View view, int i, KeyEvent keyEvent)
+  {
+
+    if (i == KeyEvent.KEYCODE_ENTER && keyEvent.getAction() == KeyEvent.ACTION_DOWN)
+    {
+        SignUp(view);
+    }
+
+    return false;
+  }
+
+
+  //A Click Listener for Change Sign Up Text View
+  //A Click Listener for the background to softly close the keyboard while opened
+  @Override
   public void onClick(View view)
   {
+    //Change Sign Up Text View when clicked will switch Sign up to Login
     if (view.getId() == R.id.ChangeSignUpTextView)
     {
       Button signUp = (Button) findViewById(R.id.SignUpButton);
@@ -59,6 +87,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         changeSignUpTextView.setText("Or, Login");
       }
     }
+    //If the Background is Clicked and the Input is open it will close
+    else if (view.getId() == R.id.logoImage || view.getId() == R.id.backgroundLogin)
+    {
+      InputMethodManager inputBoard = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+      inputBoard.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),0);
+    }
+
   }
 
 
@@ -67,6 +102,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
+    passwordField = (EditText) findViewById(R.id.password);
+
+    passwordField.setOnKeyListener(this);
+
+    RelativeLayout background = (RelativeLayout) findViewById(R.id.backgroundLogin);
+    ImageView logo = (ImageView) findViewById(R.id.logoImage);
+
+    background.setOnClickListener(this);
+    logo.setOnClickListener(this);
+
 
 
     changeSignUpTextView.setOnClickListener(this);
@@ -74,15 +119,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     ParseAnalytics.trackAppOpenedInBackground(getIntent());
   }
 
+  //Recieve a String to create a Toast
   public void ToastMesage(String message)
   {
     Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
   }
 
+  //Param view onclick for Sign or Login
+  //Depending on the Button Clicked the user is either signed up or logged in
   public void SignUp(View view) {
 
     EditText emailText = (EditText) findViewById(R.id.email);
-    EditText passwordField= (EditText) findViewById(R.id.password);
+    passwordField = (EditText) findViewById(R.id.password);
 
     if (emailText.getText().toString().matches("")
             || passwordField.getText().toString().matches("") )
