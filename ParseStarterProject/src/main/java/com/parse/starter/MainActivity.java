@@ -50,6 +50,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
   TextView changeSignUpTextView = (TextView) findViewById(R.id.ChangeSignUpTextView);
   EditText passwordField = (EditText) findViewById(R.id.password);
 
+  public void showUserList()
+  {
+    Intent intent = new Intent(getApplicationContext(), UserListActivity.class);
+    startActivity(intent);
+
+  }
+
   //Pressing enter in the keyboard will allow the user to right away enter sign up or login
   //Param i is the key pressed and represented as a integer
   @Override
@@ -112,9 +119,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     background.setOnClickListener(this);
     logo.setOnClickListener(this);
 
-
-
     changeSignUpTextView.setOnClickListener(this);
+
+    if (ParseUser.getCurrentUser() != null)
+      showUserList();
 
     ParseAnalytics.trackAppOpenedInBackground(getIntent());
   }
@@ -145,6 +153,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
           public void done(ParseException e) {
             if (e == null) {
               Log.i("Sign Up", "Registration Successful");
+              showUserList();
+
+
             } else {
               ToastMesage(e.getMessage());
             }
@@ -159,6 +170,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (user != null)
             {
               Log.i("Login", "Successful");
+              showUserList();
             }
             else
               ToastMesage(e.getMessage());
