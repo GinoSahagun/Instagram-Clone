@@ -109,8 +109,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
-    passwordField = (EditText) findViewById(R.id.password);
 
+    setTitle("Instagram Clone");
+
+    passwordField = (EditText) findViewById(R.id.password);
     passwordField.setOnKeyListener(this);
 
     RelativeLayout background = (RelativeLayout) findViewById(R.id.backgroundLogin);

@@ -13,6 +13,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -81,6 +83,13 @@ public class UserListActivity extends AppCompatActivity {
             }
         }
 
+        if (item.getItemId() == R.id.logout)
+        {
+            ParseUser.logOut();
+            Intent intent  = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(intent);
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -88,12 +97,21 @@ public class UserListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_list);
-
+        setTitle("Instagram Clone User Feed");
         ParseQuery<ParseUser> query = ParseUser.getQuery();
         final ArrayList<String> usernames = new ArrayList<>();
 
         final ListView userListView = (ListView) findViewById(R.id.UserListView);
         final ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, usernames);
+
+        userListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getApplicationContext(), UserFeedActivity.class);
+                intent.putExtra("username", usernames.get(position));
+                startActivity(intent);
+            }
+        });
 
         query.whereNotEqualTo("username", ParseUser.getCurrentUser().getUsername());
         query.addAscendingOrder("username");
@@ -153,7 +171,7 @@ public class UserListActivity extends AppCompatActivity {
                         else
                             Toast.makeText(UserListActivity.this, "Image could not be shared try again later", Toast.LENGTH_SHORT).show();
                     }
-                })
+                });
 
                 //ImageView imageView = (ImageView) findViewById(R.id.picture);
                 //imageView.setImageBitmap(bitmap);
